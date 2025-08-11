@@ -110,9 +110,9 @@ export function ProjectStats({ filters }: ProjectStatsProps) {
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {Array.from({ length: 4 }).map((_, i) => (
-          <div key={i} className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 animate-pulse">
-            <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded mb-2"></div>
-            <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded"></div>
+          <div key={i} className="theme-card border theme-border rounded-lg shadow p-6 animate-pulse">
+            <div className="h-8 bg-gray-200 dark:bg-gray-700 warm:bg-amber-200 rounded mb-2"></div>
+            <div className="h-4 bg-gray-200 dark:bg-gray-700 warm:bg-amber-200 rounded"></div>
           </div>
         ))}
       </div>
@@ -132,14 +132,14 @@ export function ProjectStats({ filters }: ProjectStatsProps) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
       {/* Total Projects */}
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+      <div className="theme-card border theme-border rounded-lg shadow p-6">
         <div className="flex items-center">
           <div className="flex-shrink-0">
-            <BarChart3 className="h-8 w-8 text-blue-600" />
+            <BarChart3 className="h-8 w-8 text-blue-600 warm:text-amber-600" />
           </div>
           <div className="ml-4">
-            <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Projects</p>
-            <p className="text-2xl font-bold text-gray-900 dark:text-white">
+            <p className="text-sm font-medium text-muted-foreground">Total Projects</p>
+            <p className="text-2xl font-bold theme-text">
               {formatNumber(stats.totalProjects)}
             </p>
           </div>
@@ -147,14 +147,14 @@ export function ProjectStats({ filters }: ProjectStatsProps) {
       </div>
 
       {/* Total Budget */}
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+      <div className="theme-card border theme-border rounded-lg shadow p-6">
         <div className="flex items-center">
           <div className="flex-shrink-0">
             <DollarSign className="h-8 w-8 text-green-600" />
           </div>
           <div className="ml-4">
-            <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Budget</p>
-            <p className="text-2xl font-bold text-gray-900 dark:text-white">
+            <p className="text-sm font-medium text-muted-foreground">Total Budget</p>
+            <p className="text-2xl font-bold theme-text">
               {formatCurrency(stats.totalBudget)}
             </p>
           </div>
@@ -162,14 +162,14 @@ export function ProjectStats({ filters }: ProjectStatsProps) {
       </div>
 
       {/* Average Budget */}
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+      <div className="theme-card border theme-border rounded-lg shadow p-6">
         <div className="flex items-center">
           <div className="flex-shrink-0">
-            <TrendingUp className="h-8 w-8 text-purple-600" />
+            <TrendingUp className="h-8 w-8 text-purple-600 warm:text-amber-600" />
           </div>
           <div className="ml-4">
-            <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Avg Budget</p>
-            <p className="text-2xl font-bold text-gray-900 dark:text-white">
+            <p className="text-sm font-medium text-muted-foreground">Avg Budget</p>
+            <p className="text-2xl font-bold theme-text">
               {formatCurrency(stats.averageBudget)}
             </p>
           </div>
@@ -177,14 +177,14 @@ export function ProjectStats({ filters }: ProjectStatsProps) {
       </div>
 
       {/* Countries */}
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+      <div className="theme-card border theme-border rounded-lg shadow p-6">
         <div className="flex items-center">
           <div className="flex-shrink-0">
-            <Globe className="h-8 w-8 text-orange-600" />
+            <Globe className="h-8 w-8 text-orange-600 warm:text-amber-600" />
           </div>
           <div className="ml-4">
-            <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Countries</p>
-            <p className="text-2xl font-bold text-gray-900 dark:text-white">
+            <p className="text-sm font-medium text-muted-foreground">Countries</p>
+            <p className="text-2xl font-bold theme-text">
               {Object.keys(stats.countryDistribution).length}
             </p>
           </div>
@@ -192,8 +192,8 @@ export function ProjectStats({ filters }: ProjectStatsProps) {
       </div>
 
       {/* Framework Distribution */}
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 md:col-span-2">
-        <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">
+      <div className="theme-card border theme-border rounded-lg shadow p-6 md:col-span-2">
+        <h3 className="text-lg font-medium theme-text mb-4">
           Top Framework Programmes
         </h3>
         <div className="space-y-2">
@@ -202,14 +202,14 @@ export function ProjectStats({ filters }: ProjectStatsProps) {
             return (
               <div key={framework}>
                 <div className="flex justify-between text-sm">
-                  <span className="text-gray-600 dark:text-gray-400">{framework}</span>
-                  <span className="font-medium text-gray-900 dark:text-white">
+                  <span className="text-muted-foreground">{framework}</span>
+                  <span className="font-medium theme-text">
                     {formatNumber(count)} ({percentage.toFixed(1)}%)
                   </span>
                 </div>
-                <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                <div className="w-full bg-gray-200 dark:bg-gray-700 warm:bg-amber-200 rounded-full h-2">
                   <div
-                    className="bg-blue-600 h-2 rounded-full"
+                    className="bg-blue-600 warm:bg-amber-600 h-2 rounded-full"
                     style={{ width: `${percentage}%` }}
                   ></div>
                 </div>
@@ -220,8 +220,8 @@ export function ProjectStats({ filters }: ProjectStatsProps) {
       </div>
 
       {/* Status Distribution */}
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 md:col-span-2">
-        <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">
+      <div className="theme-card border theme-border rounded-lg shadow p-6 md:col-span-2">
+        <h3 className="text-lg font-medium theme-text mb-4">
           Project Status Distribution
         </h3>
         <div className="space-y-2">
@@ -230,16 +230,16 @@ export function ProjectStats({ filters }: ProjectStatsProps) {
             return (
               <div key={status}>
                 <div className="flex justify-between text-sm">
-                  <span className="text-gray-600 dark:text-gray-400">{status}</span>
-                  <span className="font-medium text-gray-900 dark:text-white">
+                  <span className="text-muted-foreground">{status}</span>
+                  <span className="font-medium theme-text">
                     {formatNumber(count)} ({percentage.toFixed(1)}%)
                   </span>
                 </div>
-                <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                <div className="w-full bg-gray-200 dark:bg-gray-700 warm:bg-amber-200 rounded-full h-2">
                   <div
                     className={`h-2 rounded-full ${
                       status === 'SIGNED' ? 'bg-green-600' :
-                      status === 'CLOSED' ? 'bg-gray-600' :
+                      status === 'CLOSED' ? 'bg-gray-600 warm:bg-amber-600' :
                       'bg-red-600'
                     }`}
                     style={{ width: `${percentage}%` }}
