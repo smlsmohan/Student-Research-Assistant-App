@@ -1,59 +1,322 @@
 @import "tailwindcss";
 
+/* Default light theme */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: 0 0% 100%;
+  --foreground: 240 10% 3.9%;
+  --card: 0 0% 100%;
+  --card-foreground: 240 10% 3.9%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 240 10% 3.9%;
+  --primary: 240 5.9% 10%;
+  --primary-foreground: 0 0% 98%;
+  --secondary: 240 4.8% 95.9%;
+  --secondary-foreground: 240 5.9% 10%;
+  --muted: 240 4.8% 95.9%;
+  --muted-foreground: 240 3.8% 46.1%;
+  --accent: 240 4.8% 95.9%;
+  --accent-foreground: 240 5.9% 10%;
+  --destructive: 0 84.2% 60.2%;
+  --destructive-foreground: 0 0% 98%;
+  --border: 240 5.9% 90%;
+  --input: 240 5.9% 90%;
+  --ring: 240 5.9% 10%;
+  --radius: 0.5rem;
 }
 
-/* Warm theme variables */
+/* Dark theme */
+.dark {
+  --background: 240 10% 3.9%;
+  --foreground: 0 0% 98%;
+  --card: 240 10% 3.9%;
+  --card-foreground: 0 0% 98%;
+  --popover: 240 10% 3.9%;
+  --popover-foreground: 0 0% 98%;
+  --primary: 0 0% 98%;
+  --primary-foreground: 240 5.9% 10%;
+  --secondary: 240 3.7% 15.9%;
+  --secondary-foreground: 0 0% 98%;
+  --muted: 240 3.7% 15.9%;
+  --muted-foreground: 240 5% 64.9%;
+  --accent: 240 3.7% 15.9%;
+  --accent-foreground: 0 0% 98%;
+  --destructive: 0 62.8% 30.6%;
+  --destructive-foreground: 0 0% 98%;
+  --border: 240 3.7% 15.9%;
+  --input: 240 3.7% 15.9%;
+  --ring: 240 4.9% 83.9%;
+}
+
+/* Warm theme with distinctive orange/amber colors */
 .warm {
-  --background: #fefcf8;
-  --foreground: #92400e;
+  --background: 30 40% 98%;
+  --foreground: 25 30% 15%;
+  --card: 35 45% 96%;
+  --card-foreground: 25 30% 15%;
+  --popover: 35 45% 96%;
+  --popover-foreground: 25 30% 15%;
+  --primary: 25 95% 53%;
+  --primary-foreground: 0 0% 98%;
+  --secondary: 35 25% 88%;
+  --secondary-foreground: 30 30% 25%;
+  --muted: 35 25% 90%;
+  --muted-foreground: 30 15% 45%;
+  --accent: 35 30% 82%;
+  --accent-foreground: 30 30% 25%;
+  --destructive: 0 62% 50%;
+  --destructive-foreground: 0 0% 98%;
+  --border: 35 30% 82%;
+  --input: 35 30% 85%;
+  --ring: 25 95% 53%;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root:not(.warm) {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
-/* Custom warm theme styles */
-.warm {
-  /* Warm background colors */
-  --tw-colors-gray-50: #fef7f7;
-  --tw-colors-gray-100: #fdecec;
-  --tw-colors-gray-200: #f9d4d4;
-  --tw-colors-gray-300: #f3b7b7;
-  --tw-colors-gray-400: #eb9898;
-  --tw-colors-gray-500: #e17878;
-  --tw-colors-gray-600: #d45757;
-  --tw-colors-gray-700: #b94545;
-  --tw-colors-gray-800: #9a3939;
-  --tw-colors-gray-900: #7f2d2d;
-  
-  /* Warm blue colors */
-  --tw-colors-blue-50: #fef3f2;
-  --tw-colors-blue-100: #fee6e3;
-  --tw-colors-blue-200: #fdd2cc;
-  --tw-colors-blue-300: #fab3a8;
-  --tw-colors-blue-400: #f68a79;
-  --tw-colors-blue-500: #ee6349;
-  --tw-colors-blue-600: #dc4626;
-  --tw-colors-blue-700: #c2401f;
-  --tw-colors-blue-800: #9a3412;
-  --tw-colors-blue-900: #7c2d12;
+* {
+  border-color: hsl(var(--border));
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: hsl(var(--background));
+  color: hsl(var(--foreground));
+  font-feature-settings: "rlig" 1, "calt" 1;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Force override Tailwind classes for proper theming */
+.theme-bg {
+  background-color: hsl(var(--background)) !important;
+}
+
+.theme-text {
+  color: hsl(var(--foreground)) !important;
+}
+
+.theme-card {
+  background-color: hsl(var(--card)) !important;
+  color: hsl(var(--card-foreground)) !important;
+}
+
+.theme-border {
+  border-color: hsl(var(--border)) !important;
+}
+
+.theme-nav {
+  background-color: hsl(var(--card)) !important;
+  border-color: hsl(var(--border)) !important;
+}
+
+/* Muted foreground theming */
+.text-muted-foreground {
+  color: hsl(var(--muted-foreground)) !important;
+}
+
+/* Additional theme-specific styles for better visual distinction */
+.warm body {
+  background: linear-gradient(135deg, hsl(var(--background)) 0%, hsl(35 30% 95%) 100%);
+}
+
+.dark body {
+  background: linear-gradient(135deg, hsl(var(--background)) 0%, hsl(240 8% 8%) 100%);
+}
+
+/* Theme-specific navigation */
+.dark nav {
+  background-color: hsl(240 10% 3.9%) !important;
+  border-color: hsl(240 3.7% 15.9%) !important;
+}
+
+.warm nav {
+  background-color: hsl(35 45% 96%) !important;
+  border-color: hsl(35 30% 82%) !important;
+}
+
+/* Theme-specific hero sections */
+.dark .hero-section {
+  background: linear-gradient(135deg, hsl(240 10% 3.9%) 0%, hsl(240 8% 8%) 100%) !important;
+}
+
+.warm .hero-section {
+  background: linear-gradient(135deg, hsl(30 40% 98%) 0%, hsl(35 30% 95%) 100%) !important;
+}
+
+/* Force theme colors for common components */
+.dark .bg-white {
+  background-color: hsl(240 10% 3.9%) !important;
+}
+
+.dark .text-gray-900 {
+  color: hsl(0 0% 98%) !important;
+}
+
+.dark .text-gray-600 {
+  color: hsl(240 5% 64.9%) !important;
+}
+
+.dark .border-gray-200 {
+  border-color: hsl(240 3.7% 15.9%) !important;
+}
+
+/* Warm theme specific overrides */
+.warm .bg-gray-50 {
+  background-color: hsl(35 25% 95%) !important;
+}
+
+.warm .bg-gray-100 {
+  background-color: hsl(35 20% 90%) !important;
+}
+
+.warm .text-gray-600 {
+  color: hsl(30 15% 45%) !important;
+}
+
+.warm .text-gray-700 {
+  color: hsl(25 20% 35%) !important;
+}
+
+.warm .text-gray-900 {
+  color: hsl(25 30% 15%) !important;
+}
+
+.warm .border-gray-200 {
+  border-color: hsl(35 30% 82%) !important;
+}
+
+.warm .border-gray-300 {
+  border-color: hsl(35 25% 75%) !important;
+}
+
+/* Additional warm theme button overrides */
+.warm .bg-blue-600 {
+  background-color: hsl(25 95% 53%) !important;
+}
+
+.warm .hover\:bg-blue-700:hover {
+  background-color: hsl(25 85% 48%) !important;
+}
+
+.warm .bg-white {
+  background-color: hsl(35 45% 96%) !important;
+}
+
+.warm .text-gray-900 {
+  color: hsl(25 30% 15%) !important;
+}
+
+.warm .text-gray-600 {
+  color: hsl(30 15% 45%) !important;
+}
+
+.warm .border-gray-200 {
+  border-color: hsl(35 30% 82%) !important;
+}
+
+/* Additional warm theme overrides for comprehensive theming */
+.warm .bg-blue-100 {
+  background-color: hsl(35 40% 95%) !important;
+}
+
+.warm .text-blue-800 {
+  color: hsl(25 50% 40%) !important;
+}
+
+.warm .text-blue-600 {
+  color: hsl(25 85% 48%) !important;
+}
+
+.warm .text-blue-900 {
+  color: hsl(25 30% 25%) !important;
+}
+
+.warm .bg-green-100 {
+  background-color: hsl(50 40% 95%) !important;
+}
+
+.warm .text-green-800 {
+  color: hsl(45 50% 35%) !important;
+}
+
+.warm .text-green-700 {
+  color: hsl(45 45% 40%) !important;
+}
+
+.warm .text-green-600 {
+  color: hsl(45 60% 45%) !important;
+}
+
+.warm .bg-purple-100 {
+  background-color: hsl(35 35% 95%) !important;
+}
+
+.warm .text-purple-800 {
+  color: hsl(30 40% 35%) !important;
+}
+
+.warm .text-purple-700 {
+  color: hsl(30 35% 40%) !important;
+}
+
+.warm .text-purple-600 {
+  color: hsl(30 50% 45%) !important;
+}
+
+.warm .bg-orange-100 {
+  background-color: hsl(35 45% 95%) !important;
+}
+
+.warm .text-orange-800 {
+  color: hsl(25 60% 35%) !important;
+}
+
+.warm .text-orange-600 {
+  color: hsl(25 70% 45%) !important;
+}
+
+.warm .bg-red-100 {
+  background-color: hsl(15 40% 95%) !important;
+}
+
+.warm .text-red-800 {
+  color: hsl(15 60% 35%) !important;
+}
+
+.warm .text-red-700 {
+  color: hsl(15 55% 40%) !important;
+}
+
+/* Warm theme hover states */
+.warm .hover\:bg-amber-200:hover {
+  background-color: hsl(35 50% 85%) !important;
+}
+
+.warm .hover\:bg-gray-200:hover {
+  background-color: hsl(35 30% 88%) !important;
+}
+
+.warm .hover\:bg-gray-400:hover {
+  background-color: hsl(35 25% 75%) !important;
+}
+
+/* Warm theme border colors */
+.warm .border-blue-200 {
+  border-color: hsl(35 40% 85%) !important;
+}
+
+.warm .border-green-200 {
+  border-color: hsl(50 40% 85%) !important;
+}
+
+.warm .border-purple-200 {
+  border-color: hsl(35 35% 85%) !important;
+}
+
+.warm .border-orange-200 {
+  border-color: hsl(35 45% 85%) !important;
+}
+
+/* Enhanced warm theme focus states */
+.warm .focus\:ring-amber-500:focus {
+  --tw-ring-color: hsl(25 95% 53%) !important;
+}
+
+.warm .focus\:border-amber-500:focus {
+  border-color: hsl(25 95% 53%) !important;
 }

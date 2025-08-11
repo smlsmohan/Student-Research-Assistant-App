@@ -26,8 +26,10 @@ interface ThemeProviderProps {
 
 export function ThemeProvider({ children }: ThemeProviderProps) {
   const [theme, setTheme] = useState<Theme>('normal');
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
     // Load theme from localStorage
     const savedTheme = localStorage.getItem('theme') as Theme;
     if (savedTheme && ['normal', 'dark', 'warm'].includes(savedTheme)) {
@@ -40,6 +42,8 @@ export function ThemeProvider({ children }: ThemeProviderProps) {
   }, []);
 
   useEffect(() => {
+    if (!mounted) return;
+    
     // Apply theme to document
     const root = document.documentElement;
     
@@ -55,7 +59,7 @@ export function ThemeProvider({ children }: ThemeProviderProps) {
     
     // Save to localStorage
     localStorage.setItem('theme', theme);
-  }, [theme]);
+  }, [theme, mounted]);
 
   const toggleTheme = () => {
     const themes: Theme[] = ['normal', 'dark', 'warm'];
@@ -66,7 +70,7 @@ export function ThemeProvider({ children }: ThemeProviderProps) {
 
   return (
     <ThemeContext.Provider value={{ theme, setTheme, toggleTheme }}>
-      {children}
+      {mounted ? children : <div />}
     </ThemeContext.Provider>
   );
 }
