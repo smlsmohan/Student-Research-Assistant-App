@@ -126,8 +126,7 @@ export function ProjectsSearchView({ initialFilters = {} }: ProjectsSearchViewPr
       
       if (filters.query) {
         const query = filters.query.toLowerCase();
-        // @ts-ignore - Fallback data has different structure
-        filteredProjects = fallbackProjectsData.filter((project: any) => 
+        filteredProjects = fallbackProjectsData.filter((project: { title: string; acronym: string; objective: string }) => 
           project.title.toLowerCase().includes(query) ||
           project.acronym.toLowerCase().includes(query) ||
           project.objective.toLowerCase().includes(query)
