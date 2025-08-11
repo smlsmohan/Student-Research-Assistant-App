@@ -134,7 +134,7 @@ export function ProjectsSearchView({ initialFilters = {} }: ProjectsSearchViewPr
       }
       
       if (filters.frameworkProgramme) {
-        filteredProjects = filteredProjects.filter((p: { frameworkprogramme: string }) => p.frameworkprogramme === filters.frameworkProgramme);
+        filteredProjects = filteredProjects.filter(p => p.frameworkprogramme === filters.frameworkProgramme);
       }
       
       setProjects(filteredProjects as CordisProject[]);
