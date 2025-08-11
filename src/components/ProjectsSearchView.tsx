@@ -8,15 +8,30 @@ import { ProjectCard } from './ProjectCard';
 import { SearchInput } from './SearchInput';
 import { FilterPanel } from './FilterPanel';
 import { ProjectStats } from './ProjectStats';
+import { usePricingLimits, UpgradeModal } from '@/hooks/usePricingLimits';
 
-export function ProjectsSearchView() {
+interface ProjectsSearchViewProps {
+  initialFilters?: SearchFilters;
+}
+
+export function ProjectsSearchView({ initialFilters = {} }: ProjectsSearchViewProps) {
   const [projects, setProjects] = useState<CordisProject[]>([]);
   const [loading, setLoading] = useState(true);
   const [totalCount, setTotalCount] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
-  const [filters, setFilters] = useState<SearchFilters>({});
+  const [filters, setFilters] = useState<SearchFilters>(initialFilters);
   const [showFilters, setShowFilters] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Pricing limits integration
+  const { 
+    userPlan, 
+    canPerformSearch, 
+    incrementSearchCount, 
+    showUpgradeModal, 
+    setShowUpgradeModal, 
+    upgradePlan 
+  } = usePricingLimits();
 
   const ITEMS_PER_PAGE = 12;
 
@@ -36,7 +51,7 @@ export function ProjectsSearchView() {
 
       // Apply filters
       if (filters.query) {
-        query = query.or(`title.ilike.%${filters.query}%,objective.ilike.%${filters.query}%,acronym.ilike.%${filters.query}%`);
+        query = query.or(`title.ilike.%${filters.query}%,objective.ilike.%${filters.query}%,acronym.ilike.%${filters.query}%,org_names.ilike.%${filters.query}%`);
       }
       
       if (filters.frameworkProgramme) {
@@ -44,7 +59,15 @@ export function ProjectsSearchView() {
       }
       
       if (filters.country) {
-        query = query.ilike('org_countries', `%${filters.country}%`);
+        query = query.or(`org_countries.ilike.%${filters.country}%,org_country_names.ilike.%${filters.country}%`);
+      }
+
+      if (filters.role) {
+        query = query.ilike('roles', `%${filters.role}%`);
+      }
+
+      if (filters.domain) {
+        query = query.ilike('euroscivoc_labels', `%${filters.domain}%`);
       }
       
       if (filters.status) {
@@ -77,18 +100,31 @@ export function ProjectsSearchView() {
       setTotalCount(count || 0);
     } catch (err) {
       console.error('Error fetching projects:', err);
-      setError('Failed to load projects. Please try again.');
+      setError('Search failed. Please check your connection and try again.');
+      setProjects([]);
+      setTotalCount(0);
     } finally {
       setLoading(false);
     }
   }, [filters, currentPage]);
 
   const handleSearch = (query: string) => {
+    // Check search limits for new searches (not pagination)
+    if (query !== filters.query && !incrementSearchCount()) {
+      return; // Search blocked by pricing limits
+    }
+    
     setFilters(prev => ({ ...prev, query }));
     setCurrentPage(1);
   };
 
   const handleFilterChange = (newFilters: SearchFilters) => {
+    // Check search limits for filter changes (not pagination)
+    const isNewSearch = JSON.stringify(newFilters) !== JSON.stringify(filters);
+    if (isNewSearch && !incrementSearchCount()) {
+      return; // Search blocked by pricing limits
+    }
+    
     setFilters(newFilters);
     setCurrentPage(1);
   };
@@ -106,17 +142,36 @@ export function ProjectsSearchView() {
           <SearchInput onSearch={handleSearch} />
           
           <div className="flex items-center justify-between">
-            <button
-              onClick={() => setShowFilters(!showFilters)}
-              className="flex items-center gap-2 px-4 py-2 bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 rounded-lg hover:bg-blue-200 dark:hover:bg-blue-800 transition-colors"
-            >
-              <Filter className="w-4 h-4" />
-              Advanced Filters
-              <ChevronDown className={`w-4 h-4 transition-transform ${showFilters ? 'rotate-180' : ''}`} />
-            </button>
+            <div className="flex items-center gap-4">
+              <button
+                onClick={() => setShowFilters(!showFilters)}
+                className="flex items-center gap-2 px-4 py-2 bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 rounded-lg hover:bg-blue-200 dark:hover:bg-blue-800 transition-colors"
+              >
+                <Filter className="w-4 h-4" />
+                Research Filters
+                <ChevronDown className={`w-4 h-4 transition-transform ${showFilters ? 'rotate-180' : ''}`} />
+              </button>
+              
+              {/* Search Limit Indicator */}
+              {userPlan.tier === 'free' && (
+                <div className="flex items-center gap-2 px-3 py-2 bg-amber-50 dark:bg-amber-900/20 rounded-lg border border-amber-200 dark:border-amber-800">
+                  <span className="text-sm text-amber-700 dark:text-amber-300">
+                    Searches: {userPlan.searchesUsed}/{userPlan.searchLimit}
+                  </span>
+                  {userPlan.searchesUsed >= userPlan.searchLimit && (
+                    <button
+                      onClick={() => setShowUpgradeModal(true)}
+                      className="text-xs bg-amber-600 hover:bg-amber-700 text-white px-2 py-1 rounded transition-colors"
+                    >
+                      Upgrade
+                    </button>
+                  )}
+                </div>
+              )}
+            </div>
             
             <div className="text-sm text-gray-600 dark:text-gray-400">
-              {totalCount.toLocaleString()} projects found
+              <span className="font-medium text-green-600 dark:text-green-400">{totalCount.toLocaleString()}</span> research opportunities found
             </div>
           </div>
           
@@ -129,7 +184,18 @@ export function ProjectsSearchView() {
       {/* Error Message */}
       {error && (
         <div className="bg-red-50 dark:bg-red-900/50 border border-red-200 dark:border-red-800 rounded-lg p-4">
-          <p className="text-red-800 dark:text-red-200">{error}</p>
+          <div className="flex items-center justify-between">
+            <p className="text-red-800 dark:text-red-200">{error}</p>
+            <button 
+              onClick={() => {
+                setError(null);
+                fetchProjects();
+              }}
+              className="ml-4 px-3 py-1 bg-red-100 hover:bg-red-200 dark:bg-red-800 dark:hover:bg-red-700 text-red-800 dark:text-red-200 rounded text-sm font-medium transition-colors"
+            >
+              Try Again
+            </button>
+          </div>
         </div>
       )}
 
@@ -192,6 +258,15 @@ export function ProjectsSearchView() {
           </p>
         </div>
       )}
+
+      {/* Upgrade Modal */}
+      <UpgradeModal
+        isOpen={showUpgradeModal}
+        onClose={() => setShowUpgradeModal(false)}
+        onUpgrade={upgradePlan}
+        searchesUsed={userPlan.searchesUsed}
+        searchLimit={userPlan.searchLimit}
+      />
     </div>
   );
 }

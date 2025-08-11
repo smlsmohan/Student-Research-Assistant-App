@@ -27,11 +27,11 @@ export function FilterPanel({ filters, onFilterChange }: FilterPanelProps) {
 
   return (
     <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-6 space-y-4">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
         {/* Framework Programme */}
         <div>
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-            Framework Programme
+            Programme
           </label>
           <select
             value={localFilters.frameworkProgramme || ''}
@@ -56,8 +56,8 @@ export function FilterPanel({ filters, onFilterChange }: FilterPanelProps) {
             className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md dark:bg-gray-700 dark:text-white"
           >
             <option value="">All Statuses</option>
-            <option value="SIGNED">Signed</option>
-            <option value="CLOSED">Closed</option>
+            <option value="SIGNED">Active</option>
+            <option value="CLOSED">Completed</option>
             <option value="TERMINATED">Terminated</option>
           </select>
         </div>
@@ -65,18 +65,48 @@ export function FilterPanel({ filters, onFilterChange }: FilterPanelProps) {
         {/* Country */}
         <div>
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-            Country
+            Country/Region
           </label>
           <input
             type="text"
             value={localFilters.country || ''}
             onChange={(e) => setLocalFilters(prev => ({ ...prev, country: e.target.value || undefined }))}
-            placeholder="e.g., Germany, France"
+            placeholder="e.g., Germany, Spain"
             className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md dark:bg-gray-700 dark:text-white"
           />
         </div>
 
-        {/* Start Year */}
+        {/* Role */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            Role Type
+          </label>
+          <input
+            type="text"
+            value={localFilters.role || ''}
+            onChange={(e) => setLocalFilters(prev => ({ ...prev, role: e.target.value || undefined }))}
+            placeholder="e.g., coordinator, partner"
+            className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md dark:bg-gray-700 dark:text-white"
+          />
+        </div>
+
+        {/* Research Domain */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            Research Domain
+          </label>
+          <input
+            type="text"
+            value={localFilters.domain || ''}
+            onChange={(e) => setLocalFilters(prev => ({ ...prev, domain: e.target.value || undefined }))}
+            placeholder="e.g., AI, Climate, Health"
+            className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md dark:bg-gray-700 dark:text-white"
+          />
+        </div>
+      </div>
+
+      {/* Budget Range and Year */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div>
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
             Start Year
@@ -91,10 +121,6 @@ export function FilterPanel({ filters, onFilterChange }: FilterPanelProps) {
             className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md dark:bg-gray-700 dark:text-white"
           />
         </div>
-      </div>
-
-      {/* Budget Range */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
             Min Budget (€)
@@ -127,15 +153,15 @@ export function FilterPanel({ filters, onFilterChange }: FilterPanelProps) {
       <div className="flex space-x-4 pt-4">
         <button
           onClick={handleApplyFilters}
-          className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+          className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
         >
-          Apply Filters
+          Find Opportunities
         </button>
         <button
           onClick={handleClearFilters}
           className="px-6 py-2 bg-gray-300 dark:bg-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-400 dark:hover:bg-gray-500 transition-colors"
         >
-          Clear All
+          Reset Filters
         </button>
       </div>
     </div>

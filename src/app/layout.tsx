@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { ThemeProvider } from "@/contexts/ThemeContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -13,13 +14,13 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "CORDIS Research Explorer",
-  description: "Explore European research and innovation projects from HORIZON, H2020, and FP7 programmes. Discover cutting-edge research, funding opportunities, and collaboration networks.",
-  keywords: "CORDIS, European research, HORIZON, H2020, FP7, research projects, innovation, funding",
-  authors: [{ name: "Research Explorer Team" }],
+  title: "Student Research Assistant App",
+  description: "AI-powered research assistant for students. Explore European research opportunities, find funding, connect with professors, and discover research areas with CORDIS data.",
+  keywords: "student research assistant, research opportunities, CORDIS, European research, funding, professors, research areas, academic search",
+  authors: [{ name: "Student Research Assistant Team" }],
   openGraph: {
-    title: "CORDIS Research Explorer",
-    description: "Explore 79,069+ European research projects",
+    title: "Student Research Assistant App",
+    description: "Find research opportunities, funding, and academic connections with AI-powered insights",
     type: "website",
   },
 };
@@ -34,7 +35,9 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {children}
+        <ThemeProvider>
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   );
