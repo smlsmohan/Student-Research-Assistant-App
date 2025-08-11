@@ -3,7 +3,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Search, Filter, ChevronDown } from 'lucide-react';
 import { supabase, CORDIS_TABLE } from '@/lib/supabase';
-import { fallbackProjects } from '@/lib/fallbackData';
 import { CordisProject, SearchFilters } from '@/types/cordis';
 import { ProjectCard } from './ProjectCard';
 import { SearchInput } from './SearchInput';
@@ -27,7 +26,7 @@ export function ProjectsSearchView({ initialFilters = {} }: ProjectsSearchViewPr
   // Pricing limits integration
   const { 
     userPlan, 
-    canPerformSearch, 
+    // canPerformSearch, // Currently unused but will be used later
     incrementSearchCount, 
     showUpgradeModal, 
     setShowUpgradeModal, 
@@ -107,26 +106,27 @@ export function ProjectsSearchView({ initialFilters = {} }: ProjectsSearchViewPr
 
       setProjects(data || []);
       setTotalCount(count || 0);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Error fetching projects:', err);
       
       // Use fallback data if Supabase is unavailable
-      const { fallbackProjects } = await import('@/lib/fallbackData');
+      const { fallbackProjects: fallbackProjectsData } = await import('@/lib/fallbackData');
       
-      if (err.name === 'AbortError') {
+      const error = err as { name?: string; message?: string };
+      if (error.name === 'AbortError') {
         setError('Search timed out. Showing sample data. Please try a more specific search.');
-      } else if (err.message?.includes('Failed to fetch') || err.message?.includes('fetch')) {
+      } else if (error.message?.includes('Failed to fetch') || error.message?.includes('fetch')) {
         setError('Using sample data - database connection unavailable. For full access, please ensure Supabase is configured.');
       } else {
         setError('Database temporarily unavailable. Showing sample data.');
       }
       
       // Filter fallback data based on current filters
-      let filteredProjects = fallbackProjects;
+      let filteredProjects = fallbackProjectsData;
       
       if (filters.query) {
         const query = filters.query.toLowerCase();
-        filteredProjects = fallbackProjects.filter(project => 
+        filteredProjects = fallbackProjectsData.filter((project: CordisProject) => 
           project.title.toLowerCase().includes(query) ||
           project.acronym.toLowerCase().includes(query) ||
           project.objective.toLowerCase().includes(query)
@@ -134,7 +134,7 @@ export function ProjectsSearchView({ initialFilters = {} }: ProjectsSearchViewPr
       }
       
       if (filters.frameworkProgramme) {
-        filteredProjects = filteredProjects.filter(p => p.frameworkprogramme === filters.frameworkProgramme);
+        filteredProjects = filteredProjects.filter((p: any) => p.frameworkprogramme === filters.frameworkProgramme);
       }
       
       setProjects(filteredProjects as CordisProject[]);

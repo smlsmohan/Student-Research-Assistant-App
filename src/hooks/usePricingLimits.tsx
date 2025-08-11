@@ -120,7 +120,7 @@ export function UpgradeModal({ isOpen, onClose, onUpgrade, searchesUsed, searchL
             Free Plan Limit Reached
           </h3>
           <p className="text-gray-600 dark:text-gray-400">
-            You've used {searchesUsed} of {searchLimit} free searches. Upgrade to continue exploring research opportunities!
+            You&apos;ve used {searchesUsed} of {searchLimit} free searches. Upgrade to continue exploring research opportunities!
           </p>
         </div>
 
