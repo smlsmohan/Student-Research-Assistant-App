@@ -126,7 +126,7 @@ export function ProjectsSearchView({ initialFilters = {} }: ProjectsSearchViewPr
       
       if (filters.query) {
         const query = filters.query.toLowerCase();
-        filteredProjects = fallbackProjectsData.filter((project: CordisProject) => 
+        filteredProjects = fallbackProjectsData.filter((project: { title: string; acronym: string; objective: string }) => 
           project.title.toLowerCase().includes(query) ||
           project.acronym.toLowerCase().includes(query) ||
           project.objective.toLowerCase().includes(query)
@@ -134,7 +134,7 @@ export function ProjectsSearchView({ initialFilters = {} }: ProjectsSearchViewPr
       }
       
       if (filters.frameworkProgramme) {
-        filteredProjects = filteredProjects.filter((p: any) => p.frameworkprogramme === filters.frameworkProgramme);
+        filteredProjects = filteredProjects.filter((p: { frameworkprogramme: string }) => p.frameworkprogramme === filters.frameworkProgramme);
       }
       
       setProjects(filteredProjects as CordisProject[]);
