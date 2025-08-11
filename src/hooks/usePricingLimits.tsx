@@ -28,7 +28,7 @@ export function usePricingLimits() {
       // Check if plan is expired
       if (parsed.expiryDate && new Date(parsed.expiryDate) < new Date()) {
         // Reset to free plan if expired
-        const resetPlan = { tier: 'free', searchesUsed: 0, searchLimit: 5 };
+        const resetPlan = { tier: 'free' as PricingTier, searchesUsed: 0, searchLimit: 5 };
         setUserPlan(resetPlan);
         localStorage.setItem('userPlan', JSON.stringify(resetPlan));
       } else {
@@ -120,7 +120,7 @@ export function UpgradeModal({ isOpen, onClose, onUpgrade, searchesUsed, searchL
             Free Plan Limit Reached
           </h3>
           <p className="text-gray-600 dark:text-gray-400">
-            You've used {searchesUsed} of {searchLimit} free searches. Upgrade to continue exploring research opportunities!
+            You&apos;ve used {searchesUsed} of {searchLimit} free searches. Upgrade to continue exploring research opportunities!
           </p>
         </div>
 

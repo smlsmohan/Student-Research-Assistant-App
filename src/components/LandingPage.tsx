@@ -66,7 +66,7 @@ export function LandingPage() {
     
     // Quick response system
     setTimeout(() => {
-      let response = generateResponse(text.trim());
+      const response = generateResponse(text.trim());
       
       setChatMessages(prev => [...prev, {
         id: (Date.now() + 1).toString(),
