@@ -126,7 +126,7 @@ export function ProjectsSearchView({ initialFilters = {} }: ProjectsSearchViewPr
       
       if (filters.query) {
         const query = filters.query.toLowerCase();
-        filteredProjects = fallbackProjectsData.filter((project: CordisProject) => 
+        filteredProjects = fallbackProjectsData.filter(project => 
           project.title.toLowerCase().includes(query) ||
           project.acronym.toLowerCase().includes(query) ||
           project.objective.toLowerCase().includes(query)
