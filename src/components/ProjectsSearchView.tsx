@@ -15,7 +15,7 @@ interface ProjectsSearchViewProps {
 }
 
 export function ProjectsSearchView({ initialFilters = {} }: ProjectsSearchViewProps) {
-  // All ESLint issues resolved - ready for Vercel deployment
+  // All ESLint issues resolved - ready for Vercel deployment - Auth removed
   const [projects, setProjects] = useState<CordisProject[]>([]);
   const [loading, setLoading] = useState(true);
   const [totalCount, setTotalCount] = useState(0);
