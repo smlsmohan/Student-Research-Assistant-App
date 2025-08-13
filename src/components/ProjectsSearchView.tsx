@@ -8,7 +8,6 @@ import { ProjectCard } from './ProjectCard';
 import { SearchInput } from './SearchInput';
 import { FilterPanel } from './FilterPanel';
 import { ProjectStats } from './ProjectStats';
-import { usePricingLimits, UpgradeModal } from '@/hooks/usePricingLimits';
 
 interface ProjectsSearchViewProps {
   initialFilters?: SearchFilters;
@@ -24,16 +23,6 @@ export function ProjectsSearchView({ initialFilters = {} }: ProjectsSearchViewPr
   const [showFilters, setShowFilters] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Pricing limits integration
-  const { 
-    userPlan, 
-    // canPerformSearch, // Currently unused but will be used later
-    incrementSearchCount, 
-    showUpgradeModal, 
-    setShowUpgradeModal, 
-    upgradePlan 
-  } = usePricingLimits();
-
   const ITEMS_PER_PAGE = 12;
 
   useEffect(() => {
@@ -46,9 +35,9 @@ export function ProjectsSearchView({ initialFilters = {} }: ProjectsSearchViewPr
     setError(null);
     
     try {
-      // Add timeout to prevent long-running queries
+      // Add timeout to prevent long-running queries - reduced for better UX
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 15000); // 15 second timeout
+      const timeoutId = setTimeout(() => controller.abort(), 8000); // 8 second timeout
 
       let query = supabase
         .from(CORDIS_TABLE)
@@ -115,11 +104,11 @@ export function ProjectsSearchView({ initialFilters = {} }: ProjectsSearchViewPr
       
       const error = err as { name?: string; message?: string };
       if (error.name === 'AbortError') {
-        setError('Search timed out. Showing sample data. Please try a more specific search.');
+        setError('Database is taking too long to respond. Showing sample data instead. Click "Try Again" to retry the search.');
       } else if (error.message?.includes('Failed to fetch') || error.message?.includes('fetch')) {
-        setError('Using sample data - database connection unavailable. For full access, please ensure Supabase is configured.');
+        setError('Database connection issue. Showing sample data. Click "Try Again" to reconnect.');
       } else {
-        setError('Database temporarily unavailable. Showing sample data.');
+        setError('Database temporarily slow. Showing sample data. Click "Try Again" for live results.');
       }
       
       // Filter fallback data based on current filters
@@ -146,22 +135,11 @@ export function ProjectsSearchView({ initialFilters = {} }: ProjectsSearchViewPr
   }, [filters, currentPage]);
 
   const handleSearch = (query: string) => {
-    // Check search limits for new searches (not pagination)
-    if (query !== filters.query && !incrementSearchCount()) {
-      return; // Search blocked by pricing limits
-    }
-    
     setFilters(prev => ({ ...prev, query }));
     setCurrentPage(1);
   };
 
   const handleFilterChange = (newFilters: SearchFilters) => {
-    // Check search limits for filter changes (not pagination)
-    const isNewSearch = JSON.stringify(newFilters) !== JSON.stringify(filters);
-    if (isNewSearch && !incrementSearchCount()) {
-      return; // Search blocked by pricing limits
-    }
-    
     setFilters(newFilters);
     setCurrentPage(1);
   };
@@ -188,23 +166,6 @@ export function ProjectsSearchView({ initialFilters = {} }: ProjectsSearchViewPr
                 Research Filters
                 <ChevronDown className={`w-4 h-4 transition-transform ${showFilters ? 'rotate-180' : ''}`} />
               </button>
-              
-              {/* Search Limit Indicator */}
-              {userPlan.tier === 'free' && (
-                <div className="flex items-center gap-2 px-3 py-2 bg-amber-50 dark:bg-amber-900/20 warm:bg-amber-100 rounded-lg border border-amber-200 dark:border-amber-800 warm:border-amber-300">
-                  <span className="text-sm text-amber-700 dark:text-amber-300 warm:text-amber-800">
-                    Searches: {userPlan.searchesUsed}/{userPlan.searchLimit}
-                  </span>
-                  {userPlan.searchesUsed >= userPlan.searchLimit && (
-                    <button
-                      onClick={() => setShowUpgradeModal(true)}
-                      className="text-xs bg-amber-600 dark:bg-amber-500 warm:bg-amber-700 hover:bg-amber-700 dark:hover:bg-amber-600 warm:hover:bg-amber-800 text-white px-2 py-1 rounded transition-colors"
-                    >
-                      Upgrade
-                    </button>
-                  )}
-                </div>
-              )}
             </div>
             
             <div className="text-sm text-muted-foreground">
@@ -295,15 +256,6 @@ export function ProjectsSearchView({ initialFilters = {} }: ProjectsSearchViewPr
           </p>
         </div>
       )}
-
-      {/* Upgrade Modal */}
-      <UpgradeModal
-        isOpen={showUpgradeModal}
-        onClose={() => setShowUpgradeModal(false)}
-        onUpgrade={upgradePlan}
-        searchesUsed={userPlan.searchesUsed}
-        searchLimit={userPlan.searchLimit}
-      />
     </div>
   );
 }
