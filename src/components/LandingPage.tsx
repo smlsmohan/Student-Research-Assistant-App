@@ -1,13 +1,15 @@
 'use client';
 
 import { useState } from 'react';
-import { Check, Users, Award, Globe, ArrowRight, BookOpen, MessageCircle, Database, Send, X, Bot } from 'lucide-react';
+import { Check, Users, Award, Globe, ArrowRight, BookOpen, MessageCircle, Database, Send, X, Bot, BarChart3 } from 'lucide-react';
 import { Dashboard } from '@/components/Dashboard';
+import { ProjectsSearchView } from '@/components/ProjectsSearchView';
 import { ThemeSwitcher } from '@/components/ThemeSwitcher';
 
 
 export function LandingPage() {
   const [showApp, setShowApp] = useState(false);
+  const [showDashboard, setShowDashboard] = useState(false);
   const [showChatbot, setShowChatbot] = useState(false);
   const [chatMessages, setChatMessages] = useState([
     {
@@ -124,11 +126,19 @@ export function LandingPage() {
             >
               ← Back to Home
             </button>
-            <div className="text-sm text-muted-foreground">
-              Research Assistant Mode
+            <div className="flex items-center gap-4">
+              <button
+                onClick={() => setShowDashboard(!showDashboard)}
+                className="text-blue-600 dark:text-blue-400 warm:text-amber-600 hover:text-blue-800 dark:hover:text-blue-300 warm:hover:text-amber-800 transition-colors font-medium"
+              >
+                {showDashboard ? 'Research Assistant' : 'Research Dashboard'}
+              </button>
+              <div className="text-sm text-muted-foreground">
+                {showDashboard ? 'Dashboard Mode' : 'Research Assistant Mode'}
+              </div>
             </div>
           </div>
-          <Dashboard />
+          {showDashboard ? <Dashboard /> : <ProjectsSearchView />}
         </div>
         {/* Inline Chatbot */}
         {!showChatbot && (
@@ -242,7 +252,7 @@ export function LandingPage() {
                 onClick={() => setShowApp(true)}
                 className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors font-medium"
               >
-                Launch App
+                Launch Research Assistant
               </button>
             </div>
           </div>
@@ -265,7 +275,7 @@ export function LandingPage() {
               onClick={() => setShowApp(true)}
               className="bg-blue-600 dark:bg-blue-500 warm:bg-amber-600 text-white px-8 py-4 rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 warm:hover:bg-amber-700 transition-colors font-semibold text-lg flex items-center gap-2 justify-center"
             >
-              Start Exploring Research
+              Launch Research Assistant
               <ArrowRight className="w-5 h-5" />
             </button>
           </div>
@@ -301,31 +311,61 @@ export function LandingPage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="theme-card rounded-xl p-8 border theme-border">
               <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900 warm:bg-amber-100 rounded-lg flex items-center justify-center mb-6">
-                <BookOpen className="w-6 h-6 text-blue-600 dark:text-blue-400 warm:text-amber-600" />
+                <MessageCircle className="w-6 h-6 text-blue-600 dark:text-blue-400 warm:text-amber-600" />
               </div>
-              <h3 className="text-2xl font-bold theme-text mb-4">Smart Research Discovery</h3>
+              <h3 className="text-2xl font-bold theme-text mb-4">Research Assistant</h3>
               <p className="text-muted-foreground mb-6">
-                AI-powered search across all European research programs. Find exactly what you&apos;re looking for with intelligent filtering and recommendations.
+                Start your research journey with our AI-powered search and discovery tools. Find projects, researchers, and opportunities instantly.
+              </p>
+              <ul className="space-y-2 text-muted-foreground mb-6">
+                <li className="flex items-center gap-2">
+                  <Check className="w-4 h-4 text-green-600" />
+                  AI-powered search & filters
+                </li>
+                <li className="flex items-center gap-2">
+                  <Check className="w-4 h-4 text-green-600" />
+                  Instant project discovery
+                </li>
+                <li className="flex items-center gap-2">
+                  <Check className="w-4 h-4 text-green-600" />
+                  Contact researchers directly
+                </li>
+              </ul>
+              <button 
+                onClick={() => setShowApp(true)}
+                className="bg-blue-600 dark:bg-blue-500 warm:bg-amber-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 warm:hover:bg-amber-700 transition-colors w-full"
+              >
+                Launch Research Assistant
+              </button>
+            </div>
+
+            <div className="theme-card rounded-xl p-8 border theme-border">
+              <div className="w-12 h-12 bg-green-100 dark:bg-green-900 warm:bg-emerald-100 rounded-lg flex items-center justify-center mb-6">
+                <BarChart3 className="w-6 h-6 text-green-600 dark:text-green-400 warm:text-emerald-600" />
+              </div>
+              <h3 className="text-2xl font-bold theme-text mb-4">Research Dashboard</h3>
+              <p className="text-muted-foreground mb-6">
+                Access comprehensive analytics, research insights, and personalized recommendations with our advanced dashboard view.
               </p>
               <ul className="space-y-2 text-muted-foreground">
                 <li className="flex items-center gap-2">
                   <Check className="w-4 h-4 text-green-600" />
-                  Advanced search filters
+                  Research analytics & trends
                 </li>
                 <li className="flex items-center gap-2">
                   <Check className="w-4 h-4 text-green-600" />
-                  Research domain categorization
+                  Funding insights & patterns
                 </li>
                 <li className="flex items-center gap-2">
                   <Check className="w-4 h-4 text-green-600" />
-                  Real-time project updates
+                  Personalized recommendations
                 </li>
               </ul>
             </div>
 
             <div className="theme-card rounded-xl p-8 border theme-border">
-              <div className="w-12 h-12 bg-green-100 dark:bg-green-900 warm:bg-emerald-100 rounded-lg flex items-center justify-center mb-6">
-                <Users className="w-6 h-6 text-green-600 dark:text-green-400 warm:text-emerald-600" />
+              <div className="w-12 h-12 bg-purple-100 dark:bg-purple-900 warm:bg-orange-100 rounded-lg flex items-center justify-center mb-6">
+                <Users className="w-6 h-6 text-purple-600 dark:text-purple-400 warm:text-orange-600" />
               </div>
               <h3 className="text-2xl font-bold theme-text mb-4">Network Building</h3>
               <p className="text-muted-foreground mb-6">
@@ -346,10 +386,13 @@ export function LandingPage() {
                 </li>
               </ul>
             </div>
+          </div>
 
+          {/* Secondary Features Row */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8 max-w-4xl mx-auto">
             <div className="theme-card rounded-xl p-8 border theme-border">
-              <div className="w-12 h-12 bg-purple-100 dark:bg-purple-900 warm:bg-orange-100 rounded-lg flex items-center justify-center mb-6">
-                <Award className="w-6 h-6 text-purple-600 dark:text-purple-400 warm:text-orange-600" />
+              <div className="w-12 h-12 bg-yellow-100 dark:bg-yellow-900 warm:bg-amber-100 rounded-lg flex items-center justify-center mb-6">
+                <Award className="w-6 h-6 text-yellow-600 dark:text-yellow-400 warm:text-amber-600" />
               </div>
               <h3 className="text-2xl font-bold theme-text mb-4">Funding Intelligence</h3>
               <p className="text-muted-foreground mb-6">
@@ -370,6 +413,36 @@ export function LandingPage() {
                 </li>
               </ul>
             </div>
+
+            <div className="theme-card rounded-xl p-8 border theme-border">
+              <div className="w-12 h-12 bg-indigo-100 dark:bg-indigo-900 warm:bg-blue-100 rounded-lg flex items-center justify-center mb-6">
+                <MessageCircle className="w-6 h-6 text-indigo-600 dark:text-indigo-400 warm:text-blue-600" />
+              </div>
+              <h3 className="text-2xl font-bold theme-text mb-4">AI Research Assistant</h3>
+              <p className="text-muted-foreground mb-6">
+                Get instant help with our AI-powered research assistant. Available 24/7 to help you find the perfect research opportunities.
+              </p>
+              <ul className="space-y-2 text-muted-foreground mb-6">
+                <li className="flex items-center gap-2">
+                  <Check className="w-4 h-4 text-green-600" />
+                  24/7 availability
+                </li>
+                <li className="flex items-center gap-2">
+                  <Check className="w-4 h-4 text-green-600" />
+                  Instant research guidance
+                </li>
+                <li className="flex items-center gap-2">
+                  <Check className="w-4 h-4 text-green-600" />
+                  Smart recommendations
+                </li>
+              </ul>
+              <button 
+                onClick={() => setShowChatbot(true)}
+                className="bg-indigo-600 dark:bg-indigo-500 warm:bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-indigo-700 dark:hover:bg-indigo-600 warm:hover:bg-blue-700 transition-colors w-full"
+              >
+                Start Chat
+              </button>
+            </div>
           </div>
         </div>
       </section>
@@ -379,39 +452,21 @@ export function LandingPage() {
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold theme-text mb-4">
-              Get the Support You Need
+              Trusted Research Data
             </h2>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-              We&apos;re here to help you succeed in your research journey. From technical questions to research guidance, 
-              our team is ready to assist.
+              Our comprehensive database is built from official CORDIS data, ensuring accuracy and completeness. 
+              All information is sourced directly from the European Commission's research database.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 gap-8 max-w-md mx-auto">
-            <div className="theme-card rounded-lg p-8 text-center border theme-border">
-              <div className="w-16 h-16 bg-blue-100 dark:bg-blue-900 warm:bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                <MessageCircle className="w-8 h-8 text-blue-600 dark:text-blue-400 warm:text-amber-600" />
-              </div>
-              <h3 className="text-xl font-bold theme-text mb-4">AI Research Assistant</h3>
-              <p className="text-muted-foreground mb-6">
-                Get instant help with our AI-powered research assistant. Available 24/7 to help you find the perfect research opportunities.
-              </p>
-              <button 
-                onClick={() => setShowChatbot(true)}
-                className="bg-blue-600 dark:bg-blue-500 warm:bg-amber-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 warm:hover:bg-amber-700 transition-colors"
-              >
-                Start Chat
-              </button>
-            </div>
-          </div>
-
           {/* Data Acquisition Information */}
-          <div className="mt-16 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 warm:from-amber-50 warm:to-orange-50 rounded-xl p-8 border theme-border">
+          <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 warm:from-amber-50 warm:to-orange-50 rounded-xl p-8 border theme-border">
             <div className="text-center">
               <h3 className="text-2xl font-bold theme-text mb-4">About Our Data</h3>
               <p className="text-muted-foreground max-w-3xl mx-auto mb-6">
                 Our comprehensive database is built from official CORDIS data, ensuring accuracy and completeness. 
-                All information is sourced directly from the European Commission&apos;s Community Research and Development Information Service.
+                All information is sourced directly from the European Commission's Community Research and Development Information Service.
               </p>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
                 <div className="text-center">

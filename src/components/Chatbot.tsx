@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Send, X, MessageCircle, Bot } from 'lucide-react';
+import { X, MessageCircle, Bot, Minus, Maximize2, Plus } from 'lucide-react';
 
 interface Message {
   id: string;
@@ -24,8 +24,9 @@ export function Chatbot({ isOpen, onClose }: ChatbotProps) {
       timestamp: new Date(),
     },
   ]);
-  const [inputText, setInputText] = useState('');
   const [isTyping, setIsTyping] = useState(false);
+  const [isMinimized, setIsMinimized] = useState(false);
+  const [showQuestions, setShowQuestions] = useState(true);
 
   const suggestedQuestions = [
     "Find AI research projects",
@@ -46,7 +47,6 @@ export function Chatbot({ isOpen, onClose }: ChatbotProps) {
     };
 
     setMessages(prev => [...prev, userMessage]);
-    setInputText('');
     setIsTyping(true);
 
     // Simulate bot response
@@ -95,6 +95,42 @@ export function Chatbot({ isOpen, onClose }: ChatbotProps) {
 
   if (!isOpen) return null;
 
+  // Minimized view
+  if (isMinimized) {
+    return (
+      <div className="fixed bottom-4 right-4 w-80 bg-white dark:bg-gray-800 rounded-lg shadow-2xl border border-gray-200 dark:border-gray-700 z-50">
+        {/* Minimized Header */}
+        <div className="flex items-center justify-between p-3 bg-blue-600 text-white rounded-lg">
+          <div className="flex items-center gap-2">
+            <Bot className="w-5 h-5" />
+            <h3 className="font-semibold text-sm">Research Assistant</h3>
+            {messages.length > 1 && (
+              <span className="bg-blue-500 text-xs px-2 py-1 rounded-full">
+                {messages.length - 1} messages
+              </span>
+            )}
+          </div>
+          <div className="flex items-center gap-1">
+            <button
+              onClick={() => setIsMinimized(false)}
+              className="text-white hover:text-gray-200 transition-colors p-1"
+              title="Expand chat"
+            >
+              <Maximize2 className="w-4 h-4" />
+            </button>
+            <button
+              onClick={onClose}
+              className="text-white hover:text-gray-200 transition-colors p-1"
+              title="Close chat"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="fixed bottom-4 right-4 w-96 max-w-[calc(100vw-2rem)] h-[500px] bg-white dark:bg-gray-800 rounded-lg shadow-2xl border border-gray-200 dark:border-gray-700 flex flex-col z-50">
       {/* Header */}
@@ -103,12 +139,22 @@ export function Chatbot({ isOpen, onClose }: ChatbotProps) {
           <Bot className="w-5 h-5" />
           <h3 className="font-semibold">Research Assistant</h3>
         </div>
-        <button
-          onClick={onClose}
-          className="text-white hover:text-gray-200 transition-colors"
-        >
-          <X className="w-5 h-5" />
-        </button>
+        <div className="flex items-center gap-1">
+          <button
+            onClick={() => setIsMinimized(true)}
+            className="text-white hover:text-gray-200 transition-colors p-1"
+            title="Minimize chat"
+          >
+            <Minus className="w-4 h-4" />
+          </button>
+          <button
+            onClick={onClose}
+            className="text-white hover:text-gray-200 transition-colors p-1"
+            title="Close chat"
+          >
+            <X className="w-4 h-4" />
+          </button>
+        </div>
       </div>
 
       {/* Messages */}
@@ -147,11 +193,21 @@ export function Chatbot({ isOpen, onClose }: ChatbotProps) {
       </div>
 
       {/* Suggested Questions */}
-      {messages.length === 1 && (
-        <div className="px-4 pb-2">
-          <p className="text-xs text-gray-500 dark:text-gray-400 mb-2">Quick questions:</p>
+      <div className="px-4 pb-2 border-t border-gray-200 dark:border-gray-700">
+        <div className="flex items-center justify-between py-2">
+          <p className="text-xs text-gray-500 dark:text-gray-400">Quick questions:</p>
+          <button
+            onClick={() => setShowQuestions(!showQuestions)}
+            className="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 transition-colors p-1"
+            title={showQuestions ? "Hide questions" : "Show questions"}
+          >
+            {showQuestions ? <Minus className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
+          </button>
+        </div>
+        
+        {showQuestions && (
           <div className="flex flex-wrap gap-1">
-            {suggestedQuestions.slice(0, 3).map((question, index) => (
+            {suggestedQuestions.map((question, index) => (
               <button
                 key={index}
                 onClick={() => handleSendMessage(question)}
@@ -161,29 +217,7 @@ export function Chatbot({ isOpen, onClose }: ChatbotProps) {
               </button>
             ))}
           </div>
-        </div>
-      )}
-
-      {/* Input */}
-      <div className="p-4 border-t border-gray-200 dark:border-gray-700">
-        <div className="flex gap-2">
-          <input
-            type="text"
-            value={inputText}
-            onChange={(e) => setInputText(e.target.value)}
-            onKeyPress={(e) => e.key === 'Enter' && handleSendMessage(inputText)}
-            placeholder="Ask me about research opportunities..."
-            className="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white text-sm"
-            disabled={isTyping}
-          />
-          <button
-            onClick={() => handleSendMessage(inputText)}
-            disabled={!inputText.trim() || isTyping}
-            className="px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-          >
-            <Send className="w-4 h-4" />
-          </button>
-        </div>
+        )}
       </div>
     </div>
   );
