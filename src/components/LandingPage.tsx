@@ -30,22 +30,22 @@ export function LandingPage() {
     { 
       category: "Getting Started",
       question: "How do I start using the platform?", 
-      solution: "🚀 Getting started is easy!\n1. Click 'Launch App' to access the research dashboard\n2. Use the search filters to find projects in your field\n3. Browse by research domains, funding amounts, or countries\n4. Click on project cards to see full details\n5. Use 'Find Contacts' to connect with researchers" 
+      solution: "🚀 Getting started is easy!\n1. Click &apos;Launch App&apos; to access the research dashboard\n2. Use the search filters to find projects in your field\n3. Browse by research domains, funding amounts, or countries\n4. Click on project cards to see full details\n5. Use &apos;Find Contacts&apos; to connect with researchers" 
     },
     { 
       category: "Funding Search",
       question: "How to find funding opportunities?", 
-      solution: "💰 To find funding opportunities:\n• Use budget filters (€50K - €50M+)\n• Look for 'SIGNED' status projects as examples\n• Check Horizon Europe, H2020, and FP7 programmes\n• Filter by research domains that match your interests\n• Typical ranges: PhD €150K, Postdoc €200K, Research Grants €1M+" 
+      solution: "💰 To find funding opportunities:\n• Use budget filters (€50K - €50M+)\n• Look for &apos;SIGNED&apos; status projects as examples\n• Check Horizon Europe, H2020, and FP7 programmes\n• Filter by research domains that match your interests\n• Typical ranges: PhD €150K, Postdoc €200K, Research Grants €1M+" 
     },
     { 
       category: "Research Networking",
       question: "How to find researchers in my field?", 
-      solution: "🔍 Find researchers by:\n• Using research domain filters (AI, climate, health, etc.)\n• Searching by organization or country\n• Looking at project coordinator roles\n• Checking participant organizations\n• Using the 'Find Contacts' feature on project cards" 
+      solution: "🔍 Find researchers by:\n• Using research domain filters (AI, climate, health, etc.)\n• Searching by organization or country\n• Looking at project coordinator roles\n• Checking participant organizations\n• Using the &apos;Find Contacts&apos; feature on project cards" 
     },
     { 
       category: "Technical Issues",
       question: "The platform is slow or not working", 
-      solution: "⚡ If you're experiencing technical issues:\n• Try refreshing the page\n• Clear your browser cache\n• Check your internet connection\n• Try a different browser\n\nFor persistent issues, contact us at: smlsmohan111@gmail.com" 
+      solution: "⚡ If you&apos;re experiencing technical issues:\n• Try refreshing the page\n• Clear your browser cache\n• Check your internet connection\n• Try a different browser\n\nFor persistent issues, contact us at: smlsmohan111@gmail.com" 
     },
     { 
       category: "Data Information",
@@ -108,7 +108,7 @@ export function LandingPage() {
     }
     
     // Default response
-    return "👋 Hi! I'm here to help with quick support questions. Please select one of the options below for instant answers, or contact us directly at smlsmohan111@gmail.com for personalized assistance.";
+    return "👋 Hi! I&apos;m here to help with quick support questions. Please select one of the options below for instant answers, or contact us directly at smlsmohan111@gmail.com for personalized assistance.";
   };
 
   const handlePredefinedClick = (issue: typeof predefinedIssues[0]) => {
@@ -456,7 +456,7 @@ export function LandingPage() {
             </h2>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
               Our comprehensive database is built from official CORDIS data, ensuring accuracy and completeness. 
-              All information is sourced directly from the European Commission's research database.
+              All information is sourced directly from the European Commission&apos;s research database.
             </p>
           </div>
 
@@ -466,7 +466,7 @@ export function LandingPage() {
               <h3 className="text-2xl font-bold theme-text mb-4">About Our Data</h3>
               <p className="text-muted-foreground max-w-3xl mx-auto mb-6">
                 Our comprehensive database is built from official CORDIS data, ensuring accuracy and completeness. 
-                All information is sourced directly from the European Commission's Community Research and Development Information Service.
+                All information is sourced directly from the European Commission&apos;s Community Research and Development Information Service.
               </p>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
                 <div className="text-center">
