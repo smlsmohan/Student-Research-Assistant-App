@@ -320,3 +320,160 @@ body {
 .warm .focus\:border-amber-500:focus {
   border-color: hsl(25 95% 53%) !important;
 }
+
+/* Hide development-only UI elements that users shouldn't see */
+/* Hide Next.js development error overlay and indicators */
+[data-nextjs-dialog],
+[data-nextjs-dialog-overlay],
+[data-nextjs-toast],
+[data-nextjs-portal],
+.__next-dev-overlay,
+.__next-dev-overlay-backdrop,
+.__next-dev-error-overlay,
+.__next-error-boundary,
+[data-nextjs-turbo],
+[data-turbo-indicator],
+.turbo-indicator,
+.next-error-h1,
+.next-error-h2,
+.__next-build-watcher,
+[id*="__next"],
+[class*="__next"],
+[data-testid*="next"],
+[data-testid*="turbo"],
+[data-overlay],
+[data-nextjs-compilation-indicator],
+[data-nextjs-compilation-error],
+[data-dev-overlay],
+[data-error-overlay] {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  z-index: -9999 !important;
+}
+
+/* Hide any floating development buttons/toggles */
+button[title*="error"],
+button[title*="compilation"],
+button[title*="turbo"],
+button[title*="development"],
+button[aria-label*="error"],
+button[aria-label*="compilation"],
+button[aria-label*="turbo"] {
+  display: none !important;
+  visibility: hidden !important;
+}
+
+/* Hide development console and debug elements */
+.development-only,
+.debug-only,
+.dev-only,
+[data-dev-only],
+[data-debug-only] {
+  display: none !important;
+}
+
+/* Hide any error boundary UI */
+.error-boundary,
+.react-error-boundary,
+[role="alert"][data-nextjs] {
+  display: none !important;
+}
+
+/* Force hide any floating indicators on the right side */
+div[style*="position: fixed"][style*="right"],
+div[style*="position: absolute"][style*="right"] {
+  display: none !important;
+}
+
+/* Specifically target common development indicator patterns */
+[class*="next-dev"],
+[class*="turbo-"],
+[id*="next-dev"],
+[id*="turbo-"] {
+  display: none !important;
+}
+
+/* Additional safety net for any remaining development indicators */
+/* Target specific patterns that might show on the right side */
+[style*="position: fixed; right:"],
+[style*="position: absolute; right:"],
+[style*="position: fixed; top:"][style*="right:"],
+[style*="position: absolute; top:"][style*="right:"] {
+  display: none !important;
+  visibility: hidden !important;
+}
+
+/* Hide any remaining error/compilation badges */
+.compilation-indicator,
+.build-indicator,
+.error-indicator,
+[aria-label*="Build"],
+[aria-label*="Compilation"],
+[title*="Build"],
+[title*="Compilation"] {
+  display: none !important;
+}
+
+/* Force hide any turbopack specific elements */
+turbo-frame,
+turbo-stream,
+[data-turbo-permanent],
+[data-turbo-track] {
+  display: none !important;
+}
+
+/* Hide webpack/build related UI */
+.__webpack,
+.__build,
+[class*="webpack"],
+[class*="build-"] {
+  display: none !important;
+}
+
+/* AGGRESSIVE HIDING - Remove ALL development indicators */
+/* This will hide ANY element that might be a development tool */
+[style*="z-index: 9999"],
+[style*="z-index: 999999"],
+[style*="position: fixed"][style*="bottom"],
+[style*="position: fixed"][style*="top"],
+[style*="position: absolute"][style*="bottom"],
+[style*="position: absolute"][style*="top"] {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+}
+
+/* Hide any iframe or portal that might contain dev tools */
+iframe[src*="localhost"],
+iframe[src*="dev"],
+iframe[title*="dev"],
+portal,
+[data-portal] {
+  display: none !important;
+}
+
+/* Hide any button with specific patterns */
+button[style*="position: fixed"],
+button[style*="position: absolute"],
+div[style*="position: fixed"] button,
+div[style*="position: absolute"] button {
+  display: none !important;
+}
+
+/* Nuclear option - hide common development UI patterns */
+*[class*="indicator"]:not(.chatbot *):not(.theme *):not(.search *),
+*[id*="indicator"]:not(.chatbot *):not(.theme *):not(.search *),
+*[data-*="indicator"]:not(.chatbot *):not(.theme *):not(.search *) {
+  display: none !important;
+}
+
+/* Specifically target floating elements on the right */
+div[style*="right: 0"],
+div[style*="right: 10px"],
+div[style*="right: 20px"],
+div[style*="right: 1rem"],
+div[style*="right: 2rem"] {
+  display: none !important;
+}

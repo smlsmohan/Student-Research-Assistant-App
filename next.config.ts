@@ -8,6 +8,10 @@ const nextConfig: NextConfig = {
   images: {
     unoptimized: true,
   },
+  // Hide development overlays and indicators from users
+  compiler: {
+    removeConsole: process.env.NODE_ENV === 'production',
+  },
 };
 
 export default nextConfig;
