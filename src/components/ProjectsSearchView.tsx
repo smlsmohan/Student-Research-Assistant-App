@@ -1,13 +1,14 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { Search, Filter, ChevronDown } from 'lucide-react';
+import { Search, Filter, ChevronDown, AlertCircle } from 'lucide-react';
 import { supabase, CORDIS_TABLE } from '@/lib/supabase';
 import { CordisProject, SearchFilters } from '@/types/cordis';
 import { ProjectCard } from './ProjectCard';
 import { SearchInput } from './SearchInput';
 import { FilterPanel } from './FilterPanel';
 import { ProjectStats } from './ProjectStats';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface ProjectsSearchViewProps {
   initialFilters?: SearchFilters;
@@ -15,6 +16,7 @@ interface ProjectsSearchViewProps {
 
 export function ProjectsSearchView({ initialFilters = {} }: ProjectsSearchViewProps) {
   // All ESLint issues resolved - ready for Vercel deployment
+  const { canSearch, incrementSearchCount, user, searchCount } = useAuth();
   const [projects, setProjects] = useState<CordisProject[]>([]);
   const [loading, setLoading] = useState(true);
   const [totalCount, setTotalCount] = useState(0);
@@ -22,6 +24,7 @@ export function ProjectsSearchView({ initialFilters = {} }: ProjectsSearchViewPr
   const [filters, setFilters] = useState<SearchFilters>(initialFilters);
   const [showFilters, setShowFilters] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [hasSearched, setHasSearched] = useState(false);
 
   const ITEMS_PER_PAGE = 12;
 
@@ -31,10 +34,33 @@ export function ProjectsSearchView({ initialFilters = {} }: ProjectsSearchViewPr
   }, [filters, currentPage]);
 
   const fetchProjects = useCallback(async () => {
+    // Check search limits for authenticated users
+    if (user && hasSearched && !canSearch) {
+      setError('You have reached your limit of 5 free searches. Please contact support to continue.');
+      setLoading(false);
+      return;
+    }
+
     setLoading(true);
     setError(null);
     
     try {
+      // Track search for authenticated users
+      if (user && (filters.query || Object.keys(filters).length > 0)) {
+        incrementSearchCount();
+        setHasSearched(true);
+        
+        // Save search to history
+        await supabase
+          .from('user_search_history')
+          .insert({
+            user_id: user.id,
+            search_query: filters.query || '',
+            search_filters: filters,
+            results_count: 0 // Will be updated after we get results
+          });
+      }
+
       // Add timeout to prevent long-running queries - reduced for better UX
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 8000); // 8 second timeout
@@ -96,6 +122,16 @@ export function ProjectsSearchView({ initialFilters = {} }: ProjectsSearchViewPr
 
       setProjects(data || []);
       setTotalCount(count || 0);
+      
+      // Update search history with results count
+      if (user && hasSearched && (filters.query || Object.keys(filters).length > 0)) {
+        await supabase
+          .from('user_search_history')
+          .update({ results_count: count || 0 })
+          .eq('user_id', user.id)
+          .order('created_at', { ascending: false })
+          .limit(1);
+      }
     } catch (err: unknown) {
       console.error('Error fetching projects:', err);
       
@@ -135,13 +171,27 @@ export function ProjectsSearchView({ initialFilters = {} }: ProjectsSearchViewPr
   }, [filters, currentPage]);
 
   const handleSearch = (query: string) => {
+    // Check search limits before allowing search
+    if (user && !canSearch) {
+      setError('You have reached your limit of 5 free searches. Please contact support to continue.');
+      return;
+    }
+    
     setFilters(prev => ({ ...prev, query }));
     setCurrentPage(1);
+    setHasSearched(true);
   };
 
   const handleFilterChange = (newFilters: SearchFilters) => {
+    // Check search limits before allowing filter changes
+    if (user && !canSearch) {
+      setError('You have reached your limit of 5 free searches. Please contact support to continue.');
+      return;
+    }
+    
     setFilters(newFilters);
     setCurrentPage(1);
+    setHasSearched(true);
   };
 
   const totalPages = Math.ceil(totalCount / ITEMS_PER_PAGE);
@@ -154,7 +204,26 @@ export function ProjectsSearchView({ initialFilters = {} }: ProjectsSearchViewPr
       {/* Search and Filter Controls */}
       <div className="theme-card rounded-lg shadow-lg p-6 border theme-border">
         <div className="space-y-4">
-          <SearchInput onSearch={handleSearch} />
+          {user && (
+            <div className="flex justify-between items-center bg-blue-50 dark:bg-blue-900/20 warm:bg-amber-50 px-4 py-2 rounded-lg">
+              <span className="text-sm text-muted-foreground">Free searches remaining:</span>
+              <span className="text-sm font-semibold text-blue-600 dark:text-blue-400 warm:text-amber-600">
+                {Math.max(0, 5 - searchCount)} / 5
+              </span>
+            </div>
+          )}
+          
+          {!canSearch && user ? (
+            <div className="bg-destructive/10 border border-destructive/20 text-destructive px-4 py-3 rounded flex items-center gap-2">
+              <AlertCircle className="w-5 h-5" />
+              <div>
+                <p className="font-medium">Search Limit Reached</p>
+                <p className="text-sm">You have used all 5 of your free searches. Please contact support to continue.</p>
+              </div>
+            </div>
+          ) : (
+            <SearchInput onSearch={handleSearch} />
+          )}
           
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
@@ -168,8 +237,13 @@ export function ProjectsSearchView({ initialFilters = {} }: ProjectsSearchViewPr
               </button>
             </div>
             
-            <div className="text-sm text-muted-foreground">
+            <div className="text-sm text-muted-foreground flex items-center gap-4">
               <span className="font-medium text-green-600 dark:text-green-400 warm:text-emerald-600">{totalCount.toLocaleString()}</span> research opportunities found
+              {user && (
+                <span className="px-3 py-1 bg-blue-100 dark:bg-blue-900 warm:bg-amber-100 text-blue-700 dark:text-blue-300 warm:text-amber-700 rounded-full text-xs font-medium">
+                  {Math.max(0, 5 - searchCount)} searches left
+                </span>
+              )}
             </div>
           </div>
           

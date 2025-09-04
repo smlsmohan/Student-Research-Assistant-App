@@ -5,12 +5,19 @@ import { Check, Users, Award, Globe, ArrowRight, BookOpen, MessageCircle, Databa
 import { Dashboard } from '@/components/Dashboard';
 import { ProjectsSearchView } from '@/components/ProjectsSearchView';
 import { ThemeSwitcher } from '@/components/ThemeSwitcher';
+import { useAuth } from '@/contexts/AuthContext';
+import AuthModal from '@/components/auth/AuthModal';
+import UserMenu from '@/components/auth/UserMenu';
 
 
 export function LandingPage() {
   const [showApp, setShowApp] = useState(false);
   const [showDashboard, setShowDashboard] = useState(false);
   const [showChatbot, setShowChatbot] = useState(false);
+  const [showAuthModal, setShowAuthModal] = useState(false);
+  const [authTab, setAuthTab] = useState<'login' | 'register'>('register');
+  const { user } = useAuth();
+  
   const [chatMessages, setChatMessages] = useState([
     {
       id: '1',
@@ -115,6 +122,30 @@ export function LandingPage() {
     handleChatSend(issue.question);
   };
 
+  // Authentication handlers
+  const handleLaunchApp = () => {
+    if (user) {
+      setShowApp(true);
+    } else {
+      setAuthTab('register');
+      setShowAuthModal(true);
+    }
+  };
+
+  const handleSignIn = () => {
+    if (user) {
+      setShowApp(true);
+    } else {
+      setAuthTab('login');
+      setShowAuthModal(true);
+    }
+  };
+
+  const handleAuthSuccess = () => {
+    setShowAuthModal(false);
+    setShowApp(true);
+  };
+
   if (showApp) {
     return (
       <div className="min-h-screen theme-bg">
@@ -136,6 +167,7 @@ export function LandingPage() {
               <div className="text-sm text-muted-foreground">
                 {showDashboard ? 'Dashboard Mode' : 'Research Assistant Mode'}
               </div>
+              {user && <UserMenu />}
             </div>
           </div>
           {showDashboard ? <Dashboard /> : <ProjectsSearchView />}
@@ -248,12 +280,24 @@ export function LandingPage() {
               <a href="#features" className="text-muted-foreground hover:text-blue-600 transition-colors">Features</a>
               <a href="#support" className="text-muted-foreground hover:text-blue-600 transition-colors">Support</a>
               <ThemeSwitcher />
-              <button
-                onClick={() => setShowApp(true)}
-                className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors font-medium"
-              >
-                Launch Research Assistant
-              </button>
+              {user ? (
+                <UserMenu />
+              ) : (
+                <>
+                  <button
+                    onClick={handleSignIn}
+                    className="text-muted-foreground hover:text-blue-600 transition-colors font-medium"
+                  >
+                    Sign In
+                  </button>
+                  <button
+                    onClick={handleLaunchApp}
+                    className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors font-medium"
+                  >
+                    Get Started
+                  </button>
+                </>
+              )}
             </div>
           </div>
         </div>
@@ -270,14 +314,47 @@ export function LandingPage() {
             Discover 79,069+ European research opportunities, connect with leading professors, 
             find funding, and accelerate your academic journey with intelligent insights.
           </p>
-          <div className="flex justify-center mb-12">
-            <button
-              onClick={() => setShowApp(true)}
-              className="bg-blue-600 dark:bg-blue-500 warm:bg-amber-600 text-white px-8 py-4 rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 warm:hover:bg-amber-700 transition-colors font-semibold text-lg flex items-center gap-2 justify-center"
-            >
-              Launch Research Assistant
-              <ArrowRight className="w-5 h-5" />
-            </button>
+          <div className="flex justify-center mb-12 gap-4 flex-wrap">
+            {user ? (
+              <>
+                <button
+                  onClick={() => {
+                    setShowApp(true);
+                    setShowDashboard(false);
+                  }}
+                  className="bg-blue-600 dark:bg-blue-500 warm:bg-amber-600 text-white px-8 py-4 rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 warm:hover:bg-amber-700 transition-colors font-semibold text-lg flex items-center gap-2 justify-center"
+                >
+                  Launch Research Assistant
+                  <ArrowRight className="w-5 h-5" />
+                </button>
+                <button
+                  onClick={() => {
+                    setShowApp(true);
+                    setShowDashboard(true);
+                  }}
+                  className="border-2 border-blue-600 dark:border-blue-500 warm:border-amber-600 text-blue-600 dark:text-blue-500 warm:text-amber-600 px-8 py-4 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/20 warm:hover:bg-amber-50 transition-colors font-semibold text-lg flex items-center gap-2 justify-center"
+                >
+                  <BarChart3 className="w-5 h-5" />
+                  Research Dashboard
+                </button>
+              </>
+            ) : (
+              <>
+                <button
+                  onClick={handleLaunchApp}
+                  className="bg-blue-600 dark:bg-blue-500 warm:bg-amber-600 text-white px-8 py-4 rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 warm:hover:bg-amber-700 transition-colors font-semibold text-lg flex items-center gap-2 justify-center"
+                >
+                  Start Your Research Journey
+                  <ArrowRight className="w-5 h-5" />
+                </button>
+                <button
+                  onClick={handleSignIn}
+                  className="border-2 border-blue-600 dark:border-blue-500 warm:border-amber-600 text-blue-600 dark:text-blue-500 warm:text-amber-600 px-8 py-4 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/20 warm:hover:bg-amber-50 transition-colors font-semibold text-lg"
+                >
+                  Sign In
+                </button>
+              </>
+            )}
           </div>
           <div className="flex items-center justify-center gap-8 text-sm text-muted-foreground">
             <div className="flex items-center gap-2">
@@ -626,6 +703,13 @@ export function LandingPage() {
           </div>
         </div>
       )}
+
+      {/* Authentication Modal */}
+      <AuthModal
+        isOpen={showAuthModal}
+        onClose={() => setShowAuthModal(false)}
+        defaultTab={authTab}
+      />
     </div>
   );
 }
