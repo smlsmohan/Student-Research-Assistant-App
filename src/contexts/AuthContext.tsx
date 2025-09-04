@@ -1,6 +1,6 @@
 'use client'
 
-import React, { createContext, useContext, useEffect, useState } from 'react'
+import React, { createContext, useContext, useEffect, useState, useCallback } from 'react'
 import { User, Session, AuthError } from '@supabase/supabase-js'
 import { createClient } from '@/lib/supabase-auth'
 
@@ -86,7 +86,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       clearTimeout(loadingTimeout);
       subscription.unsubscribe();
     }
-  }, [supabase]) // loadUserSearchCount is defined below this useEffect
+  }, [supabase]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const loadUserSearchCount = async (userId: string) => {
     try {

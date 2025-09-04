@@ -22,10 +22,7 @@ export function DashboardWithAuthGate() {
 
   return (
     <>
-      <Dashboard 
-        onAuthRequired={handleAuthRequired}
-        isAuthenticated={!!user}
-      />
+      <Dashboard />
       
       <AuthModal
         isOpen={showAuthModal}
