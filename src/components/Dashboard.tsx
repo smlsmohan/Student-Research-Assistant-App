@@ -5,8 +5,10 @@ import { Search, Users, Lightbulb, Award, ArrowRight, TrendingUp, BarChart3, Pie
 import { ProjectsSearchView } from './ProjectsSearchView';
 import { DashboardStats } from './DashboardStats';
 import { ThemeSwitcher } from './ThemeSwitcher';
+import SearchLimitWarning from './auth/SearchLimitWarning';
 import { SearchFilters } from '@/types/cordis';
 import { supabase, CORDIS_TABLE } from '@/lib/supabase';
+import { useAuth } from '@/contexts/AuthContext';
 
 // Enhanced Analytics Component
 function ProgrammeChart({ data }: { data: Array<{name: string, count: number}> }) {
@@ -83,6 +85,7 @@ function BudgetDistribution({ data }: { data: Array<{range: string, count: numbe
 }
 
 export function Dashboard() {
+  const { user } = useAuth();
   const [showSearch, setShowSearch] = useState(false);
   const [initialFilters, setInitialFilters] = useState<SearchFilters>({});
   const [analyticsData, setAnalyticsData] = useState({
@@ -99,6 +102,10 @@ export function Dashboard() {
 
   const handleQuickAction = (filters: SearchFilters) => {
     setInitialFilters(filters);
+    setShowSearch(true);
+  };
+
+  const handleSearchClick = () => {
     setShowSearch(true);
   };
 
@@ -218,12 +225,25 @@ export function Dashboard() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold">Research Dashboard</h1>
-          <p className="text-muted-foreground">Discover European research opportunities</p>
+          <p className="text-muted-foreground">
+            {user 
+              ? "Discover European research opportunities"
+              : "Sign in to unlock full research features"
+            }
+          </p>
         </div>
         <div className="flex items-center gap-4">
+          {!user && (
+            <div className="bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 px-3 py-1.5 rounded-full text-sm font-medium border border-blue-200 dark:border-blue-800">
+              👋 Sign in to get started
+            </div>
+          )}
           <ThemeSwitcher />
         </div>
       </div>
+
+      {/* Search Limit Warning - Only show for authenticated users */}
+      {user && <SearchLimitWarning />}
 
       {/* Quick Stats Cards */}
       <DashboardStats />
@@ -296,7 +316,7 @@ export function Dashboard() {
             connect with leading researchers, and discover your perfect research match.
           </p>
           <button
-            onClick={() => setShowSearch(true)}
+            onClick={handleSearchClick}
             className="inline-flex items-center gap-3 bg-white text-orange-600 px-8 py-4 rounded-lg font-semibold text-lg hover:bg-orange-50 transition-colors shadow-lg hover:shadow-xl transform hover:scale-105 duration-200"
           >
             <Search className="w-6 h-6" />
