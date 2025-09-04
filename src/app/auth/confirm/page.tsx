@@ -25,7 +25,7 @@ export default function ConfirmEmailPage() {
           return
         }
 
-        const { data, error } = await supabase.auth.verifyOtp({
+        const { error } = await supabase.auth.verifyOtp({
           token_hash,
           type: 'signup'
         })
@@ -39,7 +39,7 @@ export default function ConfirmEmailPage() {
             router.push('/auth/login?confirmed=true')
           }, 3000)
         }
-      } catch (error) {
+      } catch {
         setError('An error occurred during confirmation')
       } finally {
         setLoading(false)

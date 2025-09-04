@@ -41,7 +41,7 @@ export default function LoginForm() {
         setMessage('Login successful! Redirecting...')
         router.push('/dashboard')
       }
-    } catch (error) {
+    } catch {
       setError('An unexpected error occurred')
     } finally {
       setLoading(false)
@@ -64,7 +64,7 @@ export default function LoginForm() {
         setShowResetForm(false)
         setResetEmail('')
       }
-    } catch (error) {
+    } catch {
       setError('Failed to send reset email')
     } finally {
       setResetLoading(false)

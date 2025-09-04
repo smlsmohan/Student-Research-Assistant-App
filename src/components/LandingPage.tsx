@@ -141,10 +141,10 @@ export function LandingPage() {
     }
   };
 
-  const handleAuthSuccess = () => {
-    setShowAuthModal(false);
-    setShowApp(true);
-  };
+  // const handleAuthSuccess = () => {
+  //   setShowAuthModal(false);
+  //   setShowApp(true);
+  // };
 
   if (showApp) {
     return (

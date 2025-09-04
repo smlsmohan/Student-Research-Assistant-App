@@ -76,7 +76,7 @@ export default function AuthModal({ isOpen, onClose, defaultTab = 'login' }: Aut
           onClose()
         }, 1000)
       }
-    } catch (error) {
+    } catch {
       setError('An unexpected error occurred')
     } finally {
       setLoading(false)
@@ -101,7 +101,7 @@ export default function AuthModal({ isOpen, onClose, defaultTab = 'login' }: Aut
           setMessage('')
         }, 2000)
       }
-    } catch (error) {
+    } catch {
       setError('Failed to create account')
     } finally {
       setLoading(false)
@@ -124,7 +124,7 @@ export default function AuthModal({ isOpen, onClose, defaultTab = 'login' }: Aut
         setShowForgotPassword(false)
         setResetEmail('')
       }
-    } catch (error) {
+    } catch {
       setError('Failed to send reset email')
     } finally {
       setResetLoading(false)
