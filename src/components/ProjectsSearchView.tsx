@@ -168,7 +168,7 @@ export function ProjectsSearchView({ initialFilters = {} }: ProjectsSearchViewPr
     } finally {
       setLoading(false);
     }
-  }, [filters, currentPage]);
+  }, [filters, currentPage, user, hasSearched, canSearch, incrementSearchCount]); // Added missing dependencies
 
   const handleSearch = useCallback((query: string) => {
     // Check search limits before allowing search
@@ -180,7 +180,7 @@ export function ProjectsSearchView({ initialFilters = {} }: ProjectsSearchViewPr
     setFilters(prev => ({ ...prev, query }));
     setCurrentPage(1);
     setHasSearched(true);
-  }, [user, canSearch]);
+  }, [user, canSearch]); // setError, setFilters, setCurrentPage, setHasSearched are state setters and don't need to be in deps
 
   const handleFilterChange = (newFilters: SearchFilters) => {
     // Check search limits before allowing filter changes
