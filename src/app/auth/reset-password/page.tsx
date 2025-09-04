@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase-auth'
 import { Eye, EyeOff, Key } from 'lucide-react'
@@ -14,7 +14,7 @@ export default function ResetPasswordPage() {
   const [message, setMessage] = useState('')
   const [loading, setLoading] = useState(false)
   const router = useRouter()
-  const searchParams = useSearchParams()
+  // const searchParams = useSearchParams() // Commented out as it's not used
   const supabase = createClient()
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -47,7 +47,7 @@ export default function ResetPasswordPage() {
           router.push('/auth/login')
         }, 2000)
       }
-    } catch (error) {
+    } catch {
       setError('An unexpected error occurred')
     } finally {
       setLoading(false)

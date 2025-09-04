@@ -1,17 +1,17 @@
 'use client'
 
 import React, { createContext, useContext, useEffect, useState } from 'react'
-import { User, Session } from '@supabase/supabase-js'
+import { User, Session, AuthError } from '@supabase/supabase-js'
 import { createClient } from '@/lib/supabase-auth'
 
 type AuthContextType = {
   user: User | null
   session: Session | null
   loading: boolean
-  signUp: (email: string, password: string, fullName: string) => Promise<{ error: any }>
-  signIn: (email: string, password: string) => Promise<{ error: any }>
+  signUp: (email: string, password: string, fullName: string) => Promise<{ error: AuthError | null }>
+  signIn: (email: string, password: string) => Promise<{ error: AuthError | null }>
   signOut: () => Promise<void>
-  resetPassword: (email: string) => Promise<{ error: any }>
+  resetPassword: (email: string) => Promise<{ error: AuthError | null }>
   searchCount: number
   canSearch: boolean
   incrementSearchCount: () => void
@@ -86,7 +86,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       clearTimeout(loadingTimeout);
       subscription.unsubscribe();
     }
-  }, [supabase])
+  }, [supabase]) // loadUserSearchCount is defined below this useEffect
 
   const loadUserSearchCount = async (userId: string) => {
     try {
@@ -101,7 +101,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         .eq('user_id', userId)
         .single();
 
-      const { data, error } = await Promise.race([queryPromise, timeoutPromise]) as any;
+      const result = await Promise.race([queryPromise, timeoutPromise]) as { data?: { search_count?: number } | null, error?: { code?: string } | null };
+      const { data, error } = result;
 
       if (error && error.code !== 'PGRST116') { // PGRST116 is "not found"
         console.error('Error loading search count:', error)
@@ -120,7 +121,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const signUp = async (email: string, password: string, fullName: string) => {
     try {
-      const { data, error } = await supabase.auth.signUp({
+      const { error } = await supabase.auth.signUp({
         email,
         password,
         options: {
@@ -130,9 +131,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           emailRedirectTo: `${window.location.origin}/auth/confirm`,
         }
       })
-      return { error }
+      return { error: error as AuthError | null }
     } catch (error) {
-      return { error }
+      return { error: error as AuthError | null }
     }
   }
 
@@ -142,9 +143,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         email,
         password,
       })
-      return { error }
+      return { error: error as AuthError | null }
     } catch (error) {
-      return { error }
+      return { error: error as AuthError | null }
     }
   }
 
@@ -158,9 +159,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const { error } = await supabase.auth.resetPasswordForEmail(email, {
         redirectTo: `${window.location.origin}/auth/reset-password`,
       })
-      return { error }
+      return { error: error as AuthError | null }
     } catch (error) {
-      return { error }
+      return { error: error as AuthError | null }
     }
   }
 

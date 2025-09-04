@@ -47,7 +47,7 @@ export default function UserMenu() {
         setResetMessage('Password reset email sent! Check your inbox.')
         setShowResetForm(false)
       }
-    } catch (error) {
+    } catch {
       setResetError('Failed to send reset email')
     } finally {
       setResetLoading(false)
@@ -135,7 +135,7 @@ export default function UserMenu() {
                   </span>
                 </div>
                 <p className="text-xs text-gray-600 dark:text-gray-400 mb-3">
-                  We'll send a reset link to: <span className="font-medium">{user?.email}</span>
+                  We&apos;ll send a reset link to: <span className="font-medium">{user?.email}</span>
                 </p>
                 <div className="flex gap-2">
                   <button

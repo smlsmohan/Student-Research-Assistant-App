@@ -18,7 +18,7 @@ export default function RegisterForm() {
   const [loading, setLoading] = useState(false)
   const [needsConfirmation, setNeedsConfirmation] = useState(false)
   const { signUp } = useAuth()
-  const router = useRouter()
+  // const router = useRouter() // Commented out as it's not used
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -48,7 +48,7 @@ export default function RegisterForm() {
         setNeedsConfirmation(true)
         setMessage('Registration successful! Please check your email for a confirmation link before logging in.')
       }
-    } catch (error) {
+    } catch {
       setError('An unexpected error occurred')
     } finally {
       setLoading(false)
@@ -65,7 +65,7 @@ export default function RegisterForm() {
             </div>
             <h1 className="text-2xl font-bold text-foreground mb-4">Check Your Email</h1>
             <p className="text-muted-foreground mb-4">
-              We've sent a confirmation link to <strong>{email}</strong>
+              We&apos;ve sent a confirmation link to <strong>{email}</strong>
             </p>
             <p className="text-sm text-muted-foreground mb-6">
               Please click the link in your email to activate your account, then return here to log in.

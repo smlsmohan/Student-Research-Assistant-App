@@ -10,7 +10,7 @@ export function DashboardWithAuthGate() {
   const [authTab, setAuthTab] = useState<'login' | 'register'>('login');
   const { user } = useAuth();
 
-  const handleAuthRequired = (action: string) => {
+  const handleAuthRequired = () => {
     if (!user) {
       setShowAuthModal(true);
       // Set default tab based on action context

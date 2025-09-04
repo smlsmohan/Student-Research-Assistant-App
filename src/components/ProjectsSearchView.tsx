@@ -170,7 +170,7 @@ export function ProjectsSearchView({ initialFilters = {} }: ProjectsSearchViewPr
     }
   }, [filters, currentPage]);
 
-  const handleSearch = (query: string) => {
+  const handleSearch = useCallback((query: string) => {
     // Check search limits before allowing search
     if (user && !canSearch) {
       setError('You have reached your limit of 5 free searches. Please contact support to continue.');
@@ -180,7 +180,7 @@ export function ProjectsSearchView({ initialFilters = {} }: ProjectsSearchViewPr
     setFilters(prev => ({ ...prev, query }));
     setCurrentPage(1);
     setHasSearched(true);
-  };
+  }, [user, canSearch]);
 
   const handleFilterChange = (newFilters: SearchFilters) => {
     // Check search limits before allowing filter changes
